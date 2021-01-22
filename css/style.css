@@ -32,7 +32,6 @@ header h1 {
 
 .card-main {
     background-color: var(--card-bg-color);
-    border: 1px solid red;
     width: 25%;
     height: 700px;
     padding: 1rem;
