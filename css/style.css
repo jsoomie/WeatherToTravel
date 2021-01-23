@@ -30,6 +30,10 @@ header h1 {
     height: 3.5rem;
 }
 
+.container {
+    padding: 1rem;
+}
+
 .card-main {
     background-color: var(--card-bg-color);
     width: 25%;
