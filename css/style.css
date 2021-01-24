@@ -126,3 +126,16 @@ li {
 .card-body-forecast {
     padding: 1rem;
 }
+
+.clear-button {
+    margin: 1rem auto;
+    width: 100%;
+    height: 25px;
+    background-color: red;
+    border: 0;
+}
+
+.clear-button:hover {
+    transform: scale(0.98);
+    background-color: rgb(219, 0, 0);
+}

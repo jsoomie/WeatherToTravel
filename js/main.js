@@ -8,6 +8,18 @@ $(document).ready(function(){
         searchWeather(value);
     })
 
+    $(".clear-button").click(function() {
+        localStorage.clear();
+        $(".searched-city-append").text("");
+        $(".card-display-today").text("");
+        $(".card-display-days").text("");
+        $(".card-display-forecast").text("");
+    })
+
+    $(".searched-city-append").on("click", "li", function() {
+        searchWeather($(this).text());
+    })
+
     function searchWeather(value) {
         var apiKEY = "&appid=795602cf096a742cddb6ae84e10eaedd";
         var apiURL = "https://api.openweathermap.org/data/2.5/weather";
@@ -53,6 +65,7 @@ $(document).ready(function(){
             url: apiCALL,
             success: function(data) {
                 $(".card-display-forecast").html("<h4>5-Day Forecast:</h4>");
+                $(".card-display-days").text("");
                 for(var i = 0; i < data.list.length; i++) {
                     if(data.list[i].dt_txt.indexOf("15:00:00") !== -1) {
                         var col = $("<div>").addClass("col");
