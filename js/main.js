@@ -3,32 +3,94 @@ $(document).ready(function(){
 
     $(".btn").click(function(e){
         e.preventDefault();
-        searchWeather();
+        var value = $(".search-bar").val().trim();
+        $(".search-bar").val("");
+        searchWeather(value);
     })
 
-    function searchWeather() {
-        var searchCity = $(".search-bar").val();
+    function searchWeather(value) {
         var apiKEY = "&appid=795602cf096a742cddb6ae84e10eaedd";
         var apiURL = "https://api.openweathermap.org/data/2.5/weather";
         var apiUNITS = "&units=imperial";
-        var apiSEARCH = "?q=" + searchCity;
+        var apiSEARCH = "?q=" + value;
         var apiCALL = apiURL + apiSEARCH + apiUNITS + apiKEY;
         $.ajax({
             type: "GET",
             url: apiCALL,
             success: function(data) {
-                if(history.indexOf(searchCity) === -1) {
-                    history.push(searchCity);
+                if(history.indexOf(value) === -1) {
+                    history.push(value);
                     window.localStorage.setItem("history", JSON.stringify(history));
                 }
 
-                makeRow(searchCity);
+                makeRow(value);
 
                 $(".card-display-today").empty();
 
                 var card = $(".card-display-today");
-                var title = $("<h3>").text("Today at " + data.name + " on " + moment().format("MMMM DD YYYY") );
-                card.append(title);
+
+                var title = $("<h3>").text(data.name + " today on " + moment().format("MMMM DD, YYYY"));
+
+                var wind = $("<p>").text("Wind Speed: " + data.wind.speed + " MPH");
+                var humid = $("<p>").text("Humidity: " + data.main.humidity + "%");
+                var temp = $("<p>").text("Temperature: " + data.main.temp + " °F");
+
+                var img = $("<img>").attr("src", "http://openweathermap.org/img/w/" + data.weather[0].icon + ".png");
+
+                card.append(img, title, wind, humid, temp);
+
+                forecast(value);
+                uvIndex(data.coord.lat, data.coord.lon);
+            }
+        })
+    }
+
+    function forecast(searchWeather) {
+
+        var apiCALL = "http://api.openweathermap.org/data/2.5/forecast?appid=795602cf096a742cddb6ae84e10eaedd&units=imperial&q=" + searchWeather;
+        $.ajax({
+            type: "GET",
+            url: apiCALL,
+            success: function(data) {
+                $(".card-display-forecast").html("<h4>5-Day Forecast:</h4>");
+                for(var i = 0; i < data.list.length; i++) {
+                    if(data.list[i].dt_txt.indexOf("15:00:00") !== -1) {
+                        var col = $("<div>").addClass("col");
+                        var title = $("<h4>").text(new Date(data.list[i].dt_txt).toLocaleDateString());
+                        var img = $("<img>").attr("src", "http://openweathermap.org/img/w/" + data.list[1].weather[0].icon + ".png");
+
+                        var pg1 = $("<p>").text("Temp: " + data.list[i].main.temp_max);
+                        var pg2 = $("<p>").text("Humidity: " + data.list[i].main.humidity + "%");
+                        var body = $("<div>").addClass("card-body-forecast");
+                        var card = $(".card-display-days");
+
+                        col.append(card.append(body.append(title, img, pg1,pg2)));
+
+                        $(".card-display-body").append(col);
+                    }
+                }
+            }  
+        })
+    }
+
+    function uvIndex(lat, lon) {
+        $.ajax({
+            type: "GET",
+            url: "http://api.openweathermap.org/data/2.5/uvi?appid=795602cf096a742cddb6ae84e10eaedd&lat=" + lat + "&lon=" + lon,
+            dataType: "json",
+            success: function(data) {
+                var uv = $("<p>").text("UV Index: ");
+                var btn = $("<span>").addClass("other-btn").text(data.value);
+
+                if (data.value < 3) {
+                    btn.addClass("blue-btn");
+                } else if(data.value < 7) {
+                    btn.addClass("yellow-btn");
+                } else {
+                    btn.addClass("red-btn");
+                }
+
+                $(".card-display-today").append(uv.append(btn));
             }
         })
     }
