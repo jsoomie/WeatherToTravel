@@ -59,7 +59,7 @@ $(document).ready(function(){
 
     function forecast(searchWeather) {
 
-        var apiCALL = "http://api.openweathermap.org/data/2.5/forecast?appid=795602cf096a742cddb6ae84e10eaedd&units=imperial&q=" + searchWeather;
+        var apiCALL = "https://api.openweathermap.org/data/2.5/forecast?appid=795602cf096a742cddb6ae84e10eaedd&units=imperial&q=" + searchWeather;
         $.ajax({
             type: "GET",
             url: apiCALL,
@@ -89,7 +89,7 @@ $(document).ready(function(){
     function uvIndex(lat, lon) {
         $.ajax({
             type: "GET",
-            url: "http://api.openweathermap.org/data/2.5/uvi?appid=795602cf096a742cddb6ae84e10eaedd&lat=" + lat + "&lon=" + lon,
+            url: "https://api.openweathermap.org/data/2.5/uvi?appid=795602cf096a742cddb6ae84e10eaedd&lat=" + lat + "&lon=" + lon,
             dataType: "json",
             success: function(data) {
                 var uv = $("<p>").text("UV Index: ");
